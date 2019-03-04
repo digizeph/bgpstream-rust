@@ -12,17 +12,24 @@ pub extern fn print_hello_from_rust() {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::mem;
     use std::ffi::CString;
 
     #[test]
-    fn bgpstream_create() {
+    fn bs() {
         unsafe{
-            let mut bs: bgpstream_t = mem::zeroed();
-            // bgpstream_debug("BS: create start");
-            let c_str = CString::new("Hello, world!").expect("CString::new failed");
-            printf(c_str.as_ptr());
-            bgpstream_create(); // FIXME: this will crash
+            // bgpreader -w 1445306400,1445306402 -c route-views.sfmix
+
+            let mut collector_str = CString::new("route-views.sfmix").expect("CString::new failed");
+            printf(collector_str.as_ptr());
+            let bs = bgpstream_create();
+            let datasource_id = bgpstream_get_data_interface_id(bs);
+            let datasource_info = bgpstream_get_data_interface_info(bs, datasource_id);
+            // FIXME: cannot find function `bgpstream_record_create` in this scope
+            let mut bs_record = bgpstream_record_create();
+            let w = window{start:1445306400, end:1445306402};
+            bgpstream_add_filter(bs, 2, collector_str.as_ptr());
+            bgpstream_add_interval_filter(bs, w.start, w.end);
+            let get_next_ret = bgpstream_get_next_record(bs, &mut bs_record);
         }
     }
 }
