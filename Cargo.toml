@@ -8,4 +8,5 @@ edition = "2018"
 name="ffi"
 crate-type=["staticlib"]
 
-[dependencies]
+[build-dependencies]
+bindgen = "0.42.2"
