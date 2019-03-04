@@ -1,4 +1,5 @@
-use bindgen::Builder;
+use cc;
+use bindgen;
 use std::env;
 use std::path::PathBuf;
 
@@ -10,21 +11,10 @@ fn main() {
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
     // the resulting bindings.
-    let bindings = Builder::default()
+    let bindings = bindgen::Builder::default()
         // The input header we would like to generate
         // bindings for.
         .header("wrapper.h")
-        .whitelist_function("bgpstream_record_create")
-        .whitelist_function("bgpstream_create")
-        .whitelist_function("printf")
-        .whitelist_function("bgpstream_get_data_interface_id")
-        .whitelist_function("bgpstream_get_data_interface_info")
-        .whitelist_function("bgpstream_add_filter")
-        .whitelist_function("bgpstream_add_interval_filter")
-        .whitelist_function("bgpstream_get_next_record")
-        .whitelist_type("window")
-        .whitelist_type("bgpstream_record_t")
-        .whitelist_type("bgpstream_record")
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
@@ -35,4 +25,7 @@ fn main() {
     bindings
         .write_to_file(out_path.join("bindings.rs"))
         .expect("Couldn't write bindings!");
+    cc::Build::new()
+        .file("src/bsprint.c")
+        .compile("libbsprint.a");
 }

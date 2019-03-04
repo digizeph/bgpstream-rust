@@ -1,16 +1,22 @@
-#include <bgpstream.h>
+//
+// Created by Mingwei Zhang on 2019-03-03.
+//
+
+#include "bgpstream.h"
+
+#include <assert.h>
+#include <ctype.h>
+#include <inttypes.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include <unistd.h>
 
-struct window {
-    uint32_t start;
-    uint32_t end;
-};
-
-static void print_bs_record(bgpstream_record_t *bs_record);
-
-static void print_bs_record(bgpstream_record_t *bs_record)
+void print_bs_record(bgpstream_record_t *bs_record)
 {
-    assert(bs_record);
+    // assert(bs_record);
     static char record_buf[65536];
 
     size_t written = 0; /* < how many bytes we wanted to write */
